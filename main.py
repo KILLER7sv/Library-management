@@ -31,7 +31,9 @@ def create_student(student: Student):
         result = collection.insert_one(student.model_dump())
         return {"id": str(student_id)} 
     except PyMongoError as e:
+        print(str (e))
         raise HTTPException(status_code=500, detail=f"Failed to add student")
+    
 
 # Get all students (filter by country or age or both)
 @app.get("/students", response_model=List[Student])
@@ -47,6 +49,7 @@ def list_students(country: Optional[str] = None, age: Optional[int] = None):
         return students
 
     except PyMongoError as e:
+        print(str (e))
         raise HTTPException(status_code=500, detail=f"Failed to fetch students")
     
 
@@ -62,6 +65,7 @@ def get_student(id: str):
             raise HTTPException(status_code=404, detail="Student not found")
 
     except PyMongoError as e:
+        print(str (e))
         raise HTTPException(status_code=500, detail=f"Failed to fetch student")
     
 
@@ -83,6 +87,7 @@ def update_student(id: str, student_update: StudentUpdate):
         return None
 
     except PyMongoError as e:
+        print(str (e))
         raise HTTPException(status_code=500, detail=f"Failed to update student")
 
     
@@ -98,5 +103,6 @@ def delete_student(id: str):
         return {"message": "Student deleted successfully"}
 
     except PyMongoError as e:
+        print(str (e))
         raise HTTPException(status_code=500, detail=f"Failed to delete student")
     
