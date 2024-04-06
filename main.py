@@ -7,11 +7,13 @@ from schemas import Student, StudentUpdate, AddressUpdate
 from validators import createStudentValidator
 from pymongo.errors import PyMongoError
 from util import merge_dicts
+import certifi
 
 uri = "mongodb+srv://Sarthak:KILLER_7sv08@cosmocloud-db-1.9plqi5e.mongodb.net/?retryWrites=true&w=majority&appName=cosmocloud-db-1"
 
 # Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
+ca = certifi.where()
+client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile = ca)
 db = client["cc-db"]
 collection = db["cc-collection"]
 
