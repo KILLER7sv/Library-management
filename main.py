@@ -4,7 +4,7 @@ from typing import List, Optional
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import uuid
-from schemas import Student, StudentUpdate, AddressUpdate
+from schemas import Student, StudentUpdate, AddressUpdate, StudentCreate
 from validators import createStudentValidator
 from pymongo.errors import PyMongoError
 from util import merge_dicts
@@ -22,13 +22,14 @@ app = FastAPI()
 
 # Add a Student
 @app.post("/students", status_code=201, response_model=None)
-def create_student(student: Student):
+def create_student(student_create: StudentCreate):
     try:
-        student_id = uuid.uuid4()
-        student.id = str(student_id)
-        validationOutput = createStudentValidator(student)
+        validationOutput = createStudentValidator(student_create)
         if(validationOutput[0] == False):
             raise HTTPException(status_code= 400, detail= validationOutput[1])
+        student_id = uuid.uuid4()
+        student = Student.model_validate(student_create.model_dump())
+        student.id = str(student_id)
         result = collection.insert_one(student.model_dump())
         return {"id": str(student_id)} 
     except PyMongoError as e:
